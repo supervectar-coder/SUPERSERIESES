@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SUPERVECTAR SERIES ESPAÑOLAS</title>
+
+<style>
+:root{
+  --bg:#ffffff;
+  --card:#f5f5f5;
+  --muted:#666;
+  --highlight:#ff0000;
+  --font-size:16px;
+}
+
+body{
+  font-family:Inter,system-ui;
+  background:linear-gradient(180deg,#ffffff 0%,#f2f2f2 100%);
+  color:#111;
+  margin:0;
+  padding:16px;
+  font-size: var(--font-size);
+  overflow-x:hidden;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+h1{
+  font-size:20px;
+  margin:0;
+  color:var(--highlight);
+  font-weight:900;
+  text-shadow:0 0 6px rgba(255,0,0,0.3);
+}
+
+input[type=search], select{
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,0.2);
+  background:var(--highlight);
+  color:#fff;
+  font-weight:bold;
+  font-size:16px;
+}
+
+/* ✅ PLACEHOLDER EN BLANCO */
+input[type=search]::placeholder{
+  color:#fff;
+  opacity:1;
+}
+
+h2{
+  margin-top:24px;
+  color:var(--highlight);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+  scroll-behavior:smooth;
+  overflow-x:auto;
+}
+
+.card{
+  cursor:pointer;
+  border-radius:8px;
+  overflow:hidden;
+  outline:none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background:var(--card);
+}
+
+.card:hover, .card:focus{
+  transform: scale(1.05);
+  box-shadow:0 8px 20px rgba(255,0,0,0.4);
+}
+
+.card .img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.card .title{
+  font-weight:700;
+  font-size:14px;
+  margin-top:4px;
+}
+
+.card .meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:2px;
+}
+
+.pagination{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:12px;
+}
+
+.pagination button{
+  padding:10px 14px;
+  border-radius:6px;
+  border:1px solid #111;
+  background:transparent;
+  color:#111;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.pagination button.active{
+  background:var(--highlight);
+  color:#fff;
+}
+
+.pagination button:hover, .pagination button:focus{
+  background:var(--highlight);
+  color:#fff;
+  outline:none;
+}
+
+.grid::-webkit-scrollbar{
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="https://i.ibb.co/7dGjZb80/6.jpg" style="height:42px;width:42px;border-radius:50%;object-fit:cover;">
+    <div><h1>SUPERVECTAR SERIES ESPAÑOLAS</h1></div>
+  </div>
+
+  <div class="controls" style="display:flex;gap:8px;flex-wrap:wrap;">
+    <input id="search" type="search" placeholder="Buscar...">
+
+    <select id="genre-filter">
+      <option value="all">Género</option>  
+      <option value="Acción">Acción</option>
+      <option value="Comedia">Comedia</option>
+      <option value="Drama">Drama</option>
+      <option value="Sci-Fi">Sci-Fi</option>
+      <option value="Thriller">Thriller</option>	  
+      <option value="Terror">Terror</option>
+    </select>
+
+    <select id="filterYear" style="width:100px">
+      <option value="">Año</option>
+    </select>
+  </div>
+</header>
+
+<div id="notice">
+  ⚠️ Para acceder a algunas webs necesitas estar conectado a un servidor VPN:
+  <a href="https://one.one.one.one/es-ES/" target="_blank">Descargar aqui VPN WARP 1.1.1.1</a> 
+
+</div>
+
+<main>
+  <h2>Series</h2>
+  <div id="movies-grid" class="grid"></div>
+  <div id="movies-pagination" class="pagination"></div>
+</main>
+
+<script>
+const mediaData = [
+  { id:'lqsa', title:'La que se avecina', year:2007, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/14/04/09/12/55/244916.jpg', link:'https://jonilar.eu/visualizador/lqsa/?temporada=1&capitulo=1'},  
+  { id:'anhqv', title:'Aqui no hay quien viva', year:2003, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/medias/nmedia/18/69/44/33/18869409.jpg', link:'https://anhqv.eu/visualizador/'},
+  { id:'pueblo', title:'El pueblo', year:2019, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/19/04/12/10/16/2971694.jpg', link:'https://jonilar.eu/visualizador/elpueblo/?episodio=1'},
+  { id:'hdp', title:'Los hombres de paco', year:2005, genre:'Acción', poster:'https://es.web.img2.acsta.net/r_1920_1080/pictures/18/07/12/17/58/1659570.jpg', link:'https://jonilar.eu/visualizador/pacos/?episodio=1'},
+  { id:'aida', title:'Aida', year:2005, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/14/02/07/11/08/378771.jpg', link:'https://jonilar.eu/visualizador/aida/?episodio=1'},
+  { id:'7vidas', title:'7 vidas', year:1999, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/medias/nmedia/18/69/99/86/19083221.jpg', link:'https://jonilar.eu/visualizador/7vidas/?episodio=1'},
+  { id:'losserrano', title:'Los serrano', year:2003, genre:'Comedia', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/62/96/38/18661634.jpg', link:'https://jonilar.eu/visualizador/serrano/?episodio=1'},  
+  { id:'vidaperra', title:'Vida perra', year:2026, genre:'Comedia', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/b2/11/b211a59624a8117bb4801fae59b76d63.jpg', link:'https://supervectar-coder.github.io/VERVIDAPERRA/'}, 
+  { id:'muertossl', title:'Muertos sl', year:2024, genre:'Comedia', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/bc/84/bc843b12c76c3d0b354bca389d311635.jpg', link:'https://supervectar-coder.github.io/VERMUERTOSSL/'},  
+  { id:'machosalfa2', title:'Machos alfa', year:2022, genre:'Comedia', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/22/12/12/10/59/3165979.jpg', link:'https://supervectar-coder.github.io/VERMACHOSALFA/'},    
+  { id:'viasavis', title:'Vis a vis (youtube)', year:2015, genre:'Drama', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/16/03/10/09/39/100264.jpg', link:'https://www.youtube.com/watch?v=ORbq7Kyodcg&list=PLsXA12dQBj_v1VHlFQ5cNEvz7TiaqE8wL&index'},  
+  { id:'viasavisoasis', title:'Vis a vis El oasis', year:2020, genre:'Drama', poster:'https://es.web.img2.acsta.net/r_1920_1080/pictures/20/04/10/07/17/2021397.jpg', link:'https://supervectar-coder.github.io/VERVISAVISOASIS/'},  
+  { id:'elinmortal', title:'El Inmortal', year:2022, genre:'Thriller', poster:'https://img.webme.com/pic/o/oscaradaynet/el%20inmortal.jpg', link:'https://supervectar-coder.github.io/VERELINMORTAL/'},  
+];
+
+let itemsPerPage = 200; 
+let moviePage = 1;
+let filteredData = mediaData;
+let movieFocus = 0;
+
+const searchEl = document.getElementById('search');
+const genreEl = document.getElementById('genre-filter');
+const yearEl = document.getElementById('filterYear');
+const moviesEl = document.getElementById('movies-grid');
+const moviesPagEl = document.getElementById('movies-pagination');
+
+[...new Set(mediaData.map(i=>i.year))].sort((a,b)=>b-a).forEach(y=>{
+  const o=document.createElement('option');
+  o.value=y;
+  o.textContent=y;
+  yearEl.appendChild(o);
+});
+
+function renderMovies(data){
+  const movies = data;
+  const totalPages = Math.ceil(movies.length/itemsPerPage) || 1;
+  if(moviePage>totalPages) moviePage=totalPages;
+
+  const start = (moviePage-1)*itemsPerPage;
+  const end = start + itemsPerPage;
+
+  moviesEl.innerHTML='';
+  movies.slice(start,end).forEach((item)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.tabIndex=0;
+    div.innerHTML=`
+      <img class="img" src="${item.poster}">
+      <div class="info">
+        <div class="title">${item.title}</div>
+        <div class="meta">${item.year} • ${item.genre}</div>
+      </div>`;
+    div.onclick=()=>window.open(item.link,'_blank');
+    moviesEl.appendChild(div);
+  });
+
+  moviesPagEl.innerHTML='';
+  for(let i=1;i<=totalPages;i++){
+    const btn=document.createElement('button');
+    btn.textContent=i;
+    if(i===moviePage) btn.classList.add('active');
+    btn.onclick=()=>{
+      moviePage=i;
+      movieFocus=0;
+      renderMovies(filteredData);
+    };
+    moviesPagEl.appendChild(btn);
+  }
+}
+
+function applyFilters(){
+  const q = searchEl.value.toLowerCase();
+  const genre = genreEl.value;
+  const year = yearEl.value;
+
+  filteredData = mediaData.filter(m=>
+    (genre==='all'||m.genre===genre) &&
+    (!year||String(m.year)===year) &&
+    m.title.toLowerCase().includes(q)
+  );
+
+  moviePage=1;
+  movieFocus=0;
+  renderMovies(filteredData);
+}
+
+searchEl.oninput=genreEl.onchange=yearEl.onchange=applyFilters;
+
+renderMovies(mediaData);
+</script>
+
+</body>
+</html>
